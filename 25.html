@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" />
+<meta name="renderer" content="webkit">
+<title>25个数的三次机会</title>
+<style type="text/css">
+*{ margin:0px; padding:0px;}
+body{ font-family:"幼圆";}
+.head{margin:0px auto; margin-top:50px;}
+.head div{ margin:0px auto; width:400px; text-align:center;}
+.headDiv2{ padding-top:5px;}
+.headSpan1{font-size:30px; font-weight:bold;}
+.headSpan2{font-size:15px;}
+.grade{ font-size:18px; color:#F33;}
+.head p{text-align:center; font-size:19px;}
+.main{margin:0px auto; margin-top:10px; border:1px solid #09F; width:310px; height:310px; position:relative;}
+.col{width:60px; height:60px; background-color:#09F; float:left; cursor:pointer; color:#FFF; font-size:55px; font-weight:bold;text-align:center; border:1px solid #36F;}
+.col:hover{background-color:#FFF;}
+.aDiv{ margin:0px auto; margin-top:8px; text-align:center;}
+.aDiv a{text-decoration:none; font-size:12px; color:#FFF; margin-right:10px; padding:5px 10px; background-color:#F33; vertical-align:middle;}
+.heroDiv{ visibility:hidden; position:absolute; right:-300px; top:-70px;}
+.heroTab{border-collapse:collapse; text-align:center; border:2px solid #3C9; margin-top:10px;}
+.heroTab thead td{padding:10px 30px; background-color:#6C6; font-size:16px; font-weight:bold; color:#FFF;}
+.heroTab td{padding:5px 20px; background-color:#FFF;font-size:14px; color:#000;}
+.heroDiv p{text-align:center; margin-top:20px;}
+.heroDiv p a{text-decoration:none; font-size:15px; color:#FFF; padding:6px 16px; background-color:#F33; vertical-align:middle;}
+.helpDiv{position:absolute; border:2px solid #0CC; width:460px;left:-480px; top:0px;}
+.helpDiv p{margin-bottom:10px; font-size:13px;}
+.clear{clear:both;}
+</style>
+</head>
+
+<script type="text/javascript" src="tools/jquery-3.1.1.min.js"></script>
+<script type="text/javascript">
+var eleStatusArr=new Array(25);
+for(var i=0;i<25;i++)
+{
+	eleStatusArr[i]=0;	
+}
+function on_click(id)
+{
+	var ele=document.getElementById(id);
+	var index=id.substr(1,id.length-1)-1;
+	if(eleStatusArr[index]==0)
+	{
+		eleStatusArr[index]++;
+		var ran=Math.floor(Math.random()*10+1);
+		document.getElementById(id).innerHTML=ran;
+		document.getElementById("grade").innerHTML=parseInt(document.getElementById("grade").innerHTML)+parseInt(ran);
+	}
+	else if(eleStatusArr[index]==1){
+		var ran=Math.floor(Math.random()*10+1);
+		if(ran<=3)
+		{
+			eleStatusArr[index]=4;
+			document.getElementById("grade").innerHTML=parseInt(document.getElementById("grade").innerHTML)-parseInt(document.getElementById(id).innerHTML);	
+			document.getElementById(id).innerHTML=0;
+		}else{
+			var grade=parseInt(document.getElementById("grade").innerHTML)-parseInt(document.getElementById(id).innerHTML);
+			eleStatusArr[index]++;
+			ran=Math.floor(Math.random()*10+1);
+			document.getElementById(id).innerHTML=ran;
+			document.getElementById("grade").innerHTML=parseInt(grade)+parseInt(ran);
+		}
+		
+	}
+	else if(eleStatusArr[index]==2){
+		var ran=Math.floor(Math.random()*10+1);
+		if(ran<=6)
+		{
+			eleStatusArr[index]=4;
+			document.getElementById("grade").innerHTML=parseInt(document.getElementById("grade").innerHTML)-parseInt(document.getElementById(id).innerHTML);
+			document.getElementById(id).innerHTML=0;	
+		}else{
+			var grade=parseInt(document.getElementById("grade").innerHTML)-parseInt(document.getElementById(id).innerHTML);
+			eleStatusArr[index]++;
+			ran=Math.floor(Math.random()*10+1);
+			document.getElementById(id).innerHTML=ran;
+			document.getElementById("grade").innerHTML=parseInt(grade)+parseInt(ran);
+		}
+	}else{
+		alert("红块或黑块的值已经无法再改变！");	
+	}
+	if(eleStatusArr[index]==1)
+	{
+		document.getElementById(id).style.backgroundColor="#0F6";	
+	}
+	else if(eleStatusArr[index]==2)
+	{
+		document.getElementById(id).style.backgroundColor="#FC0";	
+	}
+	else if(eleStatusArr[index]==3)
+	{
+		document.getElementById(id).style.backgroundColor="#F33";
+	}
+	else if(eleStatusArr[index]==4)
+	{
+		document.getElementById(id).style.backgroundColor="#000";
+	}
+	
+}
+function restart()
+{
+	for(var i=0;i<25;i++)
+	{
+		eleStatusArr[i]=0;	
+	}
+	document.getElementById("grade").innerHTML=0;
+	for(var i=1;i<=25;i++)
+	{
+		var id='d'+i.toString();
+		
+		document.getElementById(id).innerHTML="";
+		document.getElementById(id).style.backgroundColor="#09F";
+	}	
+}
+function inputGrade()
+{
+	$.ajax({
+			type:"post",
+			url:"submitGrade25.php",
+			data:"herograde="+$("#grade").html(),
+			success:function(msg){
+				$("#submitMes").html(msg);
+			}
+	});
+	restart();
+	
+}
+function openHero()
+{
+	$.ajax({
+			type:"post",
+			url:"topGamer.php",
+			success:function(msg){
+				$("#heroTab").html(msg);
+			}
+	});
+	document.getElementById("heroDiv").style.visibility="visible";
+}
+function close_heroDiv()
+{
+	document.getElementById("heroDiv").style.visibility="hidden";	
+}
+</script>
+
+<body>
+<div class="head">
+	<div class="headDiv1"><span class="headSpan1">25个数的三次机会</span></div>
+    <div class="headDiv2"><span class="headSpan2">当前分数：<span class="grade" id="grade">0</span></span></div>
+</div>
+<div class="main">
+	<div class="row">
+    	<div class="col" id="d1" onclick="javascript:on_click('d1')">
+        </div>
+        <div class="col" id="d2" onclick="javascript:on_click('d2')">
+        </div>
+        <div class="col" id="d3" onclick="javascript:on_click('d3')">
+        </div>
+        <div class="col" id="d4" onclick="javascript:on_click('d4')">
+        </div>
+        <div class="col" id="d5" onclick="javascript:on_click('d5')">
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="row">
+    	<div class="col" id="d6" onclick="javascript:on_click('d6')">
+        </div>
+        <div class="col" id="d7" onclick="javascript:on_click('d7')">
+        </div>
+        <div class="col" id="d8" onclick="javascript:on_click('d8')">
+        </div>
+        <div class="col" id="d9" onclick="javascript:on_click('d9')">
+        </div>
+        <div class="col" id="d10" onclick="javascript:on_click('d10')">
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="row">
+    	<div class="col" id="d11" onclick="javascript:on_click('d11')">
+        </div>
+        <div class="col" id="d12" onclick="javascript:on_click('d12')">
+        </div>
+        <div class="col" id="d13" onclick="javascript:on_click('d13')">
+        </div>
+        <div class="col" id="d14" onclick="javascript:on_click('d14')">
+        </div>
+        <div class="col" id="d15" onclick="javascript:on_click('d15')">
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="row">
+    	<div class="col" id="d16" onclick="javascript:on_click('d16')">
+        </div>
+        <div class="col" id="d17" onclick="javascript:on_click('d17')">
+        </div>
+        <div class="col" id="d18" onclick="javascript:on_click('d18')">
+        </div>
+        <div class="col" id="d19" onclick="javascript:on_click('d19')">
+        </div>
+        <div class="col" id="d20" onclick="javascript:on_click('d20')">
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="row">
+    	<div class="col" id="d21" onclick="javascript:on_click('d21')">
+        </div>
+        <div class="col" id="d22" onclick="javascript:on_click('d22')">
+        </div>
+        <div class="col" id="d23" onclick="javascript:on_click('d23')">
+        </div>
+        <div class="col" id="d24" onclick="javascript:on_click('d24')">
+        </div>
+        <div class="col" id="d25" onclick="javascript:on_click('d25')">
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="aDiv">
+    	<a href="javascript:inputGrade()">提交分数</a><a href="javascript:restart()">重新开始</a><a href="javascript:openHero()">英雄榜</a>
+    </div>
+    <div class="submitMes" id="submitMes">
+    </div>
+    <div class="heroDiv" id="heroDiv">
+    	<table class="heroTab" id="heroTab">
+        </table>
+        <p><a href="javascript:close_heroDiv()">关闭</a></p>
+    </div>
+    <div class="helpDiv" id="helpDiv">
+    	<p style="font-size:18px; font-weight:bold;">游戏规则：</p>
+        <p>点击每个方块，可以给该方块随机一个值，随机的值为1~10之间</p>
+        <p>第一次点击时：100%的概率获得一个随机值，此时方块为<span style="color:#3F6; font-weight:bold;"> 绿色</span></p>
+        <p>第二次点击时：70%的概率获得一个随机值，此时方块为<span style="color:#FC0; font-weight:bold;"> 黄色 </span>，30%的概率将值变为0，且方块变为<span style="color:#000; font-weight:bold;"> 黑色</span></p>
+        <p>第三次点击时：40%的概率获得一个随机值，此时方块为<span style="color:#F00; font-weight:bold;"> 红色 </span>，60%的概率将值变成0，且方块变为<span style="color:#000; font-weight:bold;"> 黑色</span></p>
+        <p style="color:#F33">目的：尽量使25个方块的数值总和最大</p>
+        <p style="color:#F33">注：<span style="color:#F00; font-weight:bold;"> 红色 </span>方块和<span style="color:#000; font-weight:bold;"> 黑色 </span>方块的值不可再改变！</p>
+    </div>
+</div>
+</body>
+</html>

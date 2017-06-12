@@ -1,0 +1,10 @@
+<?
+	$servername="127.0.0.1";
+	$username="root";
+	$password="GGCISBEST";
+	$conn=mysql_connect($servername,$username,$password);
+	if(!$conn)
+	{
+		die("数据库连接失败，请检查各参数是否正确");	
+	}
+?>
